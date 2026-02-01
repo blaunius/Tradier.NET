@@ -29,7 +29,7 @@ namespace Tradier.Tests
         {
             var auth = new TradierAuthentication(_sandboxToken);
             Assert.IsNotNull(auth);
-            Assert.AreEqual(_sandboxToken, auth.AccessToken);
+            Assert.AreEqual(_sandboxToken, auth.ApiKey);
         }
 
         [TestMethod]
@@ -45,7 +45,7 @@ namespace Tradier.Tests
             // Empty string is allowed (will fail at API call time)
             var auth = new TradierAuthentication("");
             Assert.IsNotNull(auth);
-            Assert.AreEqual("", auth.AccessToken);
+            Assert.AreEqual("", auth.ApiKey);
         }
 
         [TestMethod]

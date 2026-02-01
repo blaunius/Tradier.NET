@@ -22,7 +22,7 @@ namespace Tradier
         {
             return services.AddTradier(options =>
             {
-                options.AccessToken = accessToken;
+                options.ApiKey = accessToken;
                 options.UseSandbox = useSandbox;
             });
         }
@@ -40,14 +40,14 @@ namespace Tradier
             var options = new TradierOptions();
             configure(options);
 
-            if (string.IsNullOrEmpty(options.AccessToken))
-                throw new ArgumentException("AccessToken is required.", nameof(configure));
+            if (string.IsNullOrEmpty(options.ApiKey))
+                throw new ArgumentException("ApiKey is required.", nameof(configure));
 
             // Register options
             services.AddSingleton(options);
 
             // Create authentication
-            var auth = new TradierAuthentication(options.AccessToken);
+            var auth = new TradierAuthentication(options.ApiKey);
 
             // Register the appropriate client based on sandbox setting using factory
             if (options.UseSandbox)
@@ -57,7 +57,7 @@ namespace Tradier
                     client.BaseAddress = new Uri("https://sandbox.tradier.com/v1/");
                     auth.ApplyAuthentication(client);
                 });
-                
+
                 services.AddScoped<ITradierClient>(sp =>
                 {
                     var factory = sp.GetRequiredService<IHttpClientFactory>();
@@ -72,7 +72,7 @@ namespace Tradier
                     client.BaseAddress = new Uri("https://api.tradier.com/v1/");
                     auth.ApplyAuthentication(client);
                 });
-                
+
                 services.AddScoped<ITradierClient>(sp =>
                 {
                     var factory = sp.GetRequiredService<IHttpClientFactory>();
@@ -86,6 +86,7 @@ namespace Tradier
             services.AddScoped<AccountService>();
             services.AddScoped<TradingService>();
             services.AddScoped<WatchlistService>();
+            services.AddScoped<StreamingService>();
 
             return services;
         }
@@ -97,9 +98,9 @@ namespace Tradier
     public class TradierOptions
     {
         /// <summary>
-        /// Your Tradier API access token.
+        /// Your Tradier API key.
         /// </summary>
-        public string AccessToken { get; set; } = string.Empty;
+        public string ApiKey { get; set; } = string.Empty;
 
         /// <summary>
         /// If true, uses sandbox environment (paper trading). Default is true for safety.

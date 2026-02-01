@@ -113,7 +113,7 @@ namespace Tradier.Tests
             var services = new ServiceCollection();
             services.AddTradier(options =>
             {
-                options.AccessToken = _sandboxToken;
+                options.ApiKey = _sandboxToken;
                 options.UseSandbox = true;
             });
             var provider = services.BuildServiceProvider();
@@ -125,7 +125,7 @@ namespace Tradier.Tests
             // Assert
             Assert.IsNotNull(client);
             Assert.IsInstanceOfType(client, typeof(TradierSandboxClient));
-            Assert.AreEqual(_sandboxToken, options.AccessToken);
+            Assert.AreEqual(_sandboxToken, options.ApiKey);
             Assert.IsTrue(options.UseSandbox);
         }
 
@@ -140,7 +140,7 @@ namespace Tradier.Tests
             {
                 services.AddTradier(options =>
                 {
-                    options.AccessToken = "";
+                    options.ApiKey = "";
                     options.UseSandbox = true;
                 });
             });

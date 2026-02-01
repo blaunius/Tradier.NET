@@ -130,7 +130,7 @@ namespace Tradier
             this.client = new HttpClient();
             _disposeHttpClient = true;
             this.auth = authentication ?? throw new ArgumentNullException(nameof(authentication));
-            InitializeClient(authentication.AccessToken);
+            InitializeClient(authentication.ApiKey);
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace Tradier
         {
             this.client = client ?? throw new ArgumentNullException(nameof(client));
             this.auth = authentication ?? throw new ArgumentNullException(nameof(authentication));
-            InitializeClient(authentication.AccessToken);
+            InitializeClient(authentication.ApiKey);
         }
 
         internal void InitializeClient(string accessToken)
