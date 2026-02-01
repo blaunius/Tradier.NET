@@ -16,7 +16,7 @@ namespace Tradier.Services
         private const string WEBSOCKET_URL = "wss://ws.tradier.com/v1/";
 
         /// <summary>
-        /// Creates a new StreamingService with the specified client.
+        /// Creates a new StreamingService with the specified client. This service only works with production clients.
         /// </summary>
         /// <param name="tradierClient">The Tradier API client to use (must be production client, not sandbox).</param>
         /// <exception cref="NotSupportedException">Thrown when attempting to use with a sandbox client.</exception>
