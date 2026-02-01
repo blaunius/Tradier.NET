@@ -58,7 +58,7 @@ namespace Tradier.Extensions
                     auth.ApplyAuthentication(client);
                 });
                 
-                services.AddTransient<ITradierClient>(sp =>
+                services.AddScoped<ITradierClient>(sp =>
                 {
                     var factory = sp.GetRequiredService<IHttpClientFactory>();
                     var httpClient = factory.CreateClient("TradierClient");
@@ -73,7 +73,7 @@ namespace Tradier.Extensions
                     auth.ApplyAuthentication(client);
                 });
                 
-                services.AddTransient<ITradierClient>(sp =>
+                services.AddScoped<ITradierClient>(sp =>
                 {
                     var factory = sp.GetRequiredService<IHttpClientFactory>();
                     var httpClient = factory.CreateClient("TradierClient");
