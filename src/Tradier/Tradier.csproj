@@ -7,9 +7,9 @@
 		<NoWarn>$(NoWarn);CS1591</NoWarn>
 		
 		<!-- NuGet Package Metadata -->
-		<PackageId>TradierSDK</PackageId>
+		<PackageId>Tradier.NET</PackageId>
 		<Version>1.0.0-preview</Version>
-		<Authors>Barrett Launius</Authors>
+		<Authors>Pennyworth Labs</Authors>
 		<Company>Pennyworth Labs</Company>
 		<Description>A modern .NET SDK for the Tradier Brokerage API. Supports trading, market data, options chains with Greeks, account management, and streaming. Works with both production and sandbox (paper trading) environments.</Description>
 		<PackageTags>tradier;trading;stocks;options;brokerage;api;sdk;finance;market-data;options-trading</PackageTags>
@@ -18,6 +18,13 @@
 		<RepositoryUrl>https://github.com/blaunius/Tradier.NET</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageReleaseNotes>Initial preview release with core API support.</PackageReleaseNotes>
+		
+		<!-- Source Link -->
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		
 		<!-- Assembly Info -->
 		<AssemblyName>Tradier</AssemblyName>
@@ -28,6 +35,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>
