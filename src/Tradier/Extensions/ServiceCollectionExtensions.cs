@@ -52,7 +52,7 @@ namespace Tradier.Extensions
             // Register the appropriate client based on sandbox setting using factory
             if (options.UseSandbox)
             {
-                services.AddHttpClient("TradierClient", client =>
+                services.AddHttpClient("TradierSandboxClient", client =>
                 {
                     client.BaseAddress = new Uri("https://sandbox.tradier.com/v1/");
                     auth.ApplyAuthentication(client);
@@ -61,13 +61,13 @@ namespace Tradier.Extensions
                 services.AddScoped<ITradierClient>(sp =>
                 {
                     var factory = sp.GetRequiredService<IHttpClientFactory>();
-                    var httpClient = factory.CreateClient("TradierClient");
+                    var httpClient = factory.CreateClient("TradierSandboxClient");
                     return new TradierSandboxClient(httpClient, auth);
                 });
             }
             else
             {
-                services.AddHttpClient("TradierClient", client =>
+                services.AddHttpClient("TradierProductionClient", client =>
                 {
                     client.BaseAddress = new Uri("https://api.tradier.com/v1/");
                     auth.ApplyAuthentication(client);
@@ -76,7 +76,7 @@ namespace Tradier.Extensions
                 services.AddScoped<ITradierClient>(sp =>
                 {
                     var factory = sp.GetRequiredService<IHttpClientFactory>();
-                    var httpClient = factory.CreateClient("TradierClient");
+                    var httpClient = factory.CreateClient("TradierProductionClient");
                     return new TradierClient(httpClient, auth);
                 });
             }
