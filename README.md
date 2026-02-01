@@ -30,6 +30,7 @@ Build powerful trading applications with real-time market data, options chains, 
 - **Async/Await** — Fully asynchronous API for optimal performance
 - **Dependency Injection** — First-class ASP.NET Core integration
 - **Paper Trading** — Sandbox environment for risk-free testing
+- **Thread-Safe** — No static state, safe for multi-tenant applications
 
 ---
 
@@ -65,15 +66,15 @@ Install-Package Tradier.Client
 using Tradier;
 using Tradier.Services;
 
-// Set your access token
-TradierConfig.AccessToken = "YOUR_ACCESS_TOKEN";
+// Create authentication with your access token
+var auth = new TradierAuthentication("YOUR_ACCESS_TOKEN");
 
 // Create client (use TradierSandboxClient for paper trading)
-var client = new TradierSandboxClient();
+var client = new TradierSandboxClient(auth);
 
 // Use the services
 var marketData = new MarketDataService(client);
-var quotes = await marketData.GetQuotes("AAPL,MSFT,GOOGL");
+var quotes = await marketData.GetQuotes(true, "AAPL", "MSFT", "GOOGL");
 ```
 
 **ASP.NET Core Applications:**
@@ -104,7 +105,7 @@ public class MarketController : ControllerBase
     [HttpGet("quote/{symbol}")]
     public async Task<IActionResult> GetQuote(string symbol)
     {
-        var result = await _market.GetQuotes(symbol);
+        var result = await _market.GetQuotes(true, symbol);
         return result.IsSuccessful ? Ok(result.Data) : BadRequest(result.ErrorMessage);
     }
 }
@@ -116,10 +117,10 @@ public class MarketController : ControllerBase
 var marketData = new MarketDataService(client);
 
 // Get real-time quotes
-var quotes = await marketData.GetQuotes("AAPL,MSFT,GOOGL");
+var quotes = await marketData.GetQuotes(true, "AAPL", "MSFT", "GOOGL");
 
 // Get options chain with Greeks
-var chain = await marketData.GetOptionChains("AAPL", expirationDate, greeks: true);
+var chain = await marketData.GetOptionChains("AAPL", expirationDate, includeAllGreeks: true);
 ```
 
 ---
@@ -132,6 +133,7 @@ var chain = await marketData.GetOptionChains("AAPL", expirationDate, greeks: tru
 | `AccountService` | Balances, positions, order history, gain/loss reports |
 | `TradingService` | Equity and options order placement, modifications, cancellations |
 | `WatchlistService` | Create, update, and manage watchlists |
+| `StreamingService` | Real-time streaming quotes and events (production only) |
 
 ### Client Types
 
@@ -149,6 +151,8 @@ var chain = await marketData.GetOptionChains("AAPL", expirationDate, greeks: tru
 ### Fetching Options Data
 
 ```csharp
+var auth = new TradierAuthentication("YOUR_ACCESS_TOKEN");
+var client = new TradierSandboxClient(auth);
 var marketData = new MarketDataService(client);
 
 // Get available expiration dates
@@ -159,7 +163,7 @@ var nextExpiration = expirations.Data?.Dates?.First();
 var chain = await marketData.GetOptionChains(
     symbol: "AAPL",
     expiration: DateTime.Parse(nextExpiration),
-    greeks: true
+    includeAllGreeks: true
 );
 
 // Process the data
@@ -176,6 +180,8 @@ foreach (var option in chain.Data?.Options ?? [])
 ### Placing an Order
 
 ```csharp
+var auth = new TradierAuthentication("YOUR_ACCESS_TOKEN");
+var client = new TradierSandboxClient(auth);
 var trading = new TradingService(client);
 
 // Place a limit order
@@ -198,7 +204,7 @@ if (order.IsSuccessful)
 ### Error Handling
 
 ```csharp
-var result = await marketData.GetQuotes("AAPL");
+var result = await marketData.GetQuotes(true, "AAPL");
 
 if (result.IsSuccessful)
 {
@@ -224,17 +230,24 @@ dotnet user-secrets set "Tradier:AccessToken" "your-token-here"
 ```
 
 ```csharp
-TradierConfig.AccessToken = configuration["Tradier:AccessToken"];
-var client = new TradierSandboxClient();
+var config = new ConfigurationBuilder()
+    .AddUserSecrets<Program>()
+    .Build();
+
+var auth = new TradierAuthentication(config["Tradier:AccessToken"]!);
+var client = new TradierSandboxClient(auth);
 ```
 
-### Explicit Authentication
+### Using Custom HttpClient
 
-For applications requiring multiple clients:
+For advanced scenarios (proxies, custom handlers, etc.):
 
 ```csharp
+var httpClient = new HttpClient();
+// Configure httpClient as needed...
+
 var auth = new TradierAuthentication("YOUR_ACCESS_TOKEN");
-var client = new TradierClient(auth);
+var client = new TradierClient(httpClient, auth);
 ```
 
 ### OAuth Flow (Advanced)
