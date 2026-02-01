@@ -14,13 +14,10 @@ namespace Tradier.Services
     public class WatchlistService : TradingService
     {
         /// <summary>
-        /// <inheritdoc cref="WatchlistService"/>
+        /// Creates a new WatchlistService with the specified client.
         /// </summary>
+        /// <param name="client">The Tradier API client to use.</param>
         public WatchlistService(ITradierClient client) : base(client) { }
-        /// <summary>
-        /// <inheritdoc cref="WatchlistService"/>
-        /// </summary>
-        public WatchlistService() : base() { }
 
         /// <summary>
         /// Retrieve all of a users watchlists.

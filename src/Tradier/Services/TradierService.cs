@@ -18,22 +18,5 @@ namespace Tradier.Services
         {
             this.client = client ?? throw new ArgumentNullException(nameof(client));
         }
-
-        /// <summary>
-        /// Creates a new service using the default client from <see cref="TradierConfig"/>.
-        /// </summary>
-        /// <remarks>
-        /// This constructor uses the static TradierConfig which is not recommended for ASP.NET Core applications.
-        /// For web applications, use dependency injection with <c>builder.Services.AddTradier()</c> instead.
-        /// </remarks>
-        public TradierService()
-        {
-            #pragma warning disable CS0618 // TradierConfig is obsolete but supported for simple scenarios
-            this.client = TradierConfig.DefaultClient 
-                ?? throw new InvalidOperationException(
-                    "Default client is not set. Please initialize a TradierClient first, " +
-                    "or use builder.Services.AddTradier() for dependency injection.");
-            #pragma warning restore CS0618
-        }
     }
 }

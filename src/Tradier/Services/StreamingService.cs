@@ -8,11 +8,11 @@ namespace Tradier.Services
 {
     public class StreamingService : TradierService
     {
-        public StreamingService() : base()
-        {
-            if (this.client is TradierSandboxClient)
-                throw new NotSupportedException("Streaming information can only be used in the production client.");
-        }
+        /// <summary>
+        /// Creates a new StreamingService with the specified client.
+        /// </summary>
+        /// <param name="tradierClient">The Tradier API client to use (must be production client, not sandbox).</param>
+        /// <exception cref="NotSupportedException">Thrown when attempting to use with a sandbox client.</exception>
         public StreamingService(ITradierClient tradierClient) : base(tradierClient)
         {
             if (tradierClient is TradierSandboxClient)
