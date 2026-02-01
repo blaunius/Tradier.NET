@@ -66,8 +66,8 @@ Install-Package Tradier.Client
 using Tradier;
 using Tradier.Services;
 
-// Create authentication with your access token
-var auth = new TradierAuthentication("YOUR_ACCESS_TOKEN");
+// Create authentication with your api key
+var auth = new TradierAuthentication("YOUR_API_KEY");
 
 // Create client (use TradierSandboxClient for paper trading)
 var client = new TradierSandboxClient(auth);
@@ -84,12 +84,12 @@ var quotes = await marketData.GetQuotes(true, "AAPL", "MSFT", "GOOGL");
 using Tradier.Extensions;
 
 // One-liner setup (defaults to sandbox for safety)
-builder.Services.AddTradier("YOUR_ACCESS_TOKEN");
+builder.Services.AddTradier("YOUR_API_KEY");
 
 // Or with configuration options
 builder.Services.AddTradier(options =>
 {
-    options.AccessToken = builder.Configuration["Tradier:AccessToken"]!;
+    options.ApiKey = builder.Configuration["Tradier:ApiKey"]!;
     options.UseSandbox = builder.Environment.IsDevelopment();
 });
 ```
@@ -151,7 +151,7 @@ var chain = await marketData.GetOptionChains("AAPL", expirationDate, includeAllG
 ### Fetching Options Data
 
 ```csharp
-var auth = new TradierAuthentication("YOUR_ACCESS_TOKEN");
+var auth = new TradierAuthentication("YOUR_API_KEY");
 var client = new TradierSandboxClient(auth);
 var marketData = new MarketDataService(client);
 
@@ -180,7 +180,7 @@ foreach (var option in chain.Data?.Options ?? [])
 ### Placing an Order
 
 ```csharp
-var auth = new TradierAuthentication("YOUR_ACCESS_TOKEN");
+var auth = new TradierAuthentication("YOUR_API_KEY");
 var client = new TradierSandboxClient(auth);
 var trading = new TradingService(client);
 
@@ -226,7 +226,7 @@ else
 ### Using User Secrets (Recommended for Development)
 
 ```bash
-dotnet user-secrets set "Tradier:AccessToken" "your-token-here"
+dotnet user-secrets set "Tradier:ApiKey" "your-token-here"
 ```
 
 ```csharp
@@ -234,7 +234,7 @@ var config = new ConfigurationBuilder()
     .AddUserSecrets<Program>()
     .Build();
 
-var auth = new TradierAuthentication(config["Tradier:AccessToken"]!);
+var auth = new TradierAuthentication(config["Tradier:ApiKey"]!);
 var client = new TradierSandboxClient(auth);
 ```
 
@@ -246,24 +246,8 @@ For advanced scenarios (proxies, custom handlers, etc.):
 var httpClient = new HttpClient();
 // Configure httpClient as needed...
 
-var auth = new TradierAuthentication("YOUR_ACCESS_TOKEN");
+var auth = new TradierAuthentication("YOUR_API_KEY");
 var client = new TradierClient(httpClient, auth);
-```
-
-### OAuth Flow (Advanced)
-
-If you need to implement OAuth authorization for end users:
-
-```csharp
-var auth = new TradierAuthentication("temporary-token", "https://your-app.com/callback")
-{
-    ClientId = "your-client-id",
-    ClientSecret = "your-client-secret",
-    AuthorizationCode = "code-from-callback"
-};
-
-await auth.ExchangeCodeForTokenAsync();
-// auth.AccessToken now contains the user's token
 ```
 
 ---

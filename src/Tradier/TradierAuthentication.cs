@@ -1,5 +1,4 @@
 using System.Net.Http.Headers;
-using System.Text.Json;
 
 namespace Tradier
 {
@@ -8,11 +7,8 @@ namespace Tradier
     /// </summary>
     public class TradierAuthentication
     {
-        private const string AUTH_ENDPOINT = "https://api.tradier.com/v1/oauth/authorize";
-        private const string TOKEN_ENDPOINT = "https://api.tradier.com/v1/oauth/token";
-
         /// <summary>
-        /// Creates authentication with the api key from your Tradier Account.
+        /// Creates authentication with the API key from your Tradier Account.
         /// </summary>
         /// <param name="apiKey">Your Tradier API key.</param>
         public TradierAuthentication(string apiKey)

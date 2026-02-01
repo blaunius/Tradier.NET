@@ -250,22 +250,6 @@ var auth = new TradierAuthentication("YOUR_API_KEY");
 var client = new TradierClient(httpClient, auth);
 ```
 
-### OAuth Flow (Advanced)
-
-If you need to implement OAuth authorization for end users:
-
-```csharp
-var auth = new TradierAuthentication("temporary-token", "https://your-app.com/callback")
-{
-    ClientId = "your-client-id",
-    ClientSecret = "your-client-secret",
-    AuthorizationCode = "code-from-callback"
-};
-
-await auth.ExchangeCodeForTokenAsync();
-// auth.ApiKey now contains the user's token
-```
-
 ---
 
 ## Contributing

@@ -145,10 +145,10 @@ namespace Tradier
             InitializeClient(authentication.ApiKey);
         }
 
-        internal void InitializeClient(string accessToken)
+        internal void InitializeClient(string apiKey)
         {
             this.client.BaseAddress ??= new Uri(BaseAddress);
-            this.auth ??= new TradierAuthentication(accessToken);
+            this.auth ??= new TradierAuthentication(apiKey);
             this.auth.ApplyAuthentication(this.client);
         }
 

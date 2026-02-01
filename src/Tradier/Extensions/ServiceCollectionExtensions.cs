@@ -12,17 +12,17 @@ namespace Tradier
         /// Adds Tradier API services to the service collection.
         /// </summary>
         /// <param name="services">The service collection.</param>
-        /// <param name="accessToken">Your Tradier API access token.</param>
+        /// <param name="apiKey">Your Tradier API key.</param>
         /// <param name="useSandbox">If true, uses sandbox (paper trading). Default is true for safety.</param>
         /// <returns>The service collection for chaining.</returns>
         public static IServiceCollection AddTradier(
             this IServiceCollection services,
-            string accessToken,
+            string apiKey,
             bool useSandbox = true)
         {
             return services.AddTradier(options =>
             {
-                options.ApiKey = accessToken;
+                options.ApiKey = apiKey;
                 options.UseSandbox = useSandbox;
             });
         }
@@ -86,7 +86,12 @@ namespace Tradier
             services.AddScoped<AccountService>();
             services.AddScoped<TradingService>();
             services.AddScoped<WatchlistService>();
-            services.AddScoped<StreamingService>();
+            
+            // StreamingService only works with production client
+            if (!options.UseSandbox)
+            {
+                services.AddScoped<StreamingService>();
+            }
 
             return services;
         }
