@@ -9,27 +9,6 @@ namespace Tradier
     public class TradierAuthentication
     {
         /// <summary>
-        /// Creates authentication using settings from <see cref="TradierConfig"/>.
-        /// </summary>
-        /// <remarks>
-        /// This constructor uses the static TradierConfig which is not recommended for ASP.NET Core applications.
-        /// For web applications, use <c>builder.Services.AddTradier()</c> instead.
-        /// </remarks>
-        public TradierAuthentication()
-        {
-            #pragma warning disable CS0618 // TradierConfig is obsolete but supported for simple scenarios
-            AccessToken = TradierConfig.AccessToken 
-                ?? throw new TradierAuthenticationException("The access token cannot be null. Please set TradierConfig.AccessToken or use AddTradier() for DI.");
-            
-            // RedirectUri is optional - only needed for OAuth flows
-            if (!string.IsNullOrEmpty(TradierConfig.RedirectUri))
-            {
-                RedirectUri = new Uri(TradierConfig.RedirectUri);
-            }
-            #pragma warning restore CS0618
-        }
-
-        /// <summary>
         /// Creates authentication with just an access token.
         /// This is the simplest way to authenticate for API usage.
         /// </summary>

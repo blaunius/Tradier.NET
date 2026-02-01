@@ -2,7 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Tradier;
-using Tradier.Extensions;
 using Tradier.Services;
 
 namespace Tradier.Tests

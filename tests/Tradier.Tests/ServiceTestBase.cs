@@ -22,14 +22,6 @@ namespace Tradier.Tests
                 .Build();
         }
 
-        [TestInitialize()]
-        public void Init()
-        {
-            TradierConfig.RedirectUri = config["Tradier:RedirectUri"];
-            this.SandboxClient = new TradierSandboxClient(new TradierAuthentication(config["Tradier:AccessTokens:Sandbox"], TradierConfig.RedirectUri));
-            this.Client = new TradierClient(new TradierAuthentication(config["Tradier:AccessTokens:Production"], TradierConfig.RedirectUri));
-        }
-
         public virtual void SetService()
         {
         }

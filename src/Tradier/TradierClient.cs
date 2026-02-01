@@ -14,10 +14,10 @@ namespace Tradier
             {
                 var response = new TResponse();
                 var request = new HttpRequestMessage(HttpMethod.Get, new Uri(client.BaseAddress!, endpoint));
-                
+
                 using var httpResponse = await client.SendAsync(request, token);
                 await response.ParseAsync(httpResponse, GetJsonSerializerOptions(), token);
-                
+
                 return response;
             }
             catch (HttpRequestException ex)
@@ -29,22 +29,22 @@ namespace Tradier
                 throw new OperationCanceledException($"Request to endpoint '{endpoint}' was cancelled or timed out.", ex);
             }
         }
-        
+
         public async Task<TResponse> Post<TResponse>(string endpoint, Dictionary<string, string>? body = null, CancellationToken token = default) where TResponse : ITradierResponse, new()
         {
             try
             {
                 var response = new TResponse();
                 var request = new HttpRequestMessage(HttpMethod.Post, new Uri(client.BaseAddress!, endpoint));
-                
+
                 if (body != null && body.Any())
                 {
                     request.Content = new FormUrlEncodedContent(body);
                 }
-                
+
                 using var httpResponse = await client.SendAsync(request, token);
                 await response.ParseAsync(httpResponse, GetJsonSerializerOptions(), token);
-                
+
                 return response;
             }
             catch (HttpRequestException ex)
@@ -56,22 +56,22 @@ namespace Tradier
                 throw new OperationCanceledException($"Request to endpoint '{endpoint}' was cancelled or timed out.", ex);
             }
         }
-        
+
         public async Task<TResponse> Put<TResponse>(string endpoint, Dictionary<string, string>? body = null, CancellationToken token = default) where TResponse : ITradierResponse, new()
         {
             try
             {
                 var response = new TResponse();
                 var request = new HttpRequestMessage(HttpMethod.Put, new Uri(client.BaseAddress!, endpoint));
-                
+
                 if (body != null && body.Any())
                 {
                     request.Content = new FormUrlEncodedContent(body);
                 }
-                
+
                 using var httpResponse = await client.SendAsync(request, token);
                 await response.ParseAsync(httpResponse, GetJsonSerializerOptions(), token);
-                
+
                 return response;
             }
             catch (HttpRequestException ex)
@@ -83,17 +83,17 @@ namespace Tradier
                 throw new OperationCanceledException($"Request to endpoint '{endpoint}' was cancelled or timed out.", ex);
             }
         }
-        
+
         public async Task<TResponse> Delete<TResponse>(string endpoint, CancellationToken token = default) where TResponse : ITradierResponse, new()
         {
             try
             {
                 var response = new TResponse();
                 var request = new HttpRequestMessage(HttpMethod.Delete, new Uri(client.BaseAddress!, endpoint));
-                
+
                 using var httpResponse = await client.SendAsync(request, token);
                 await response.ParseAsync(httpResponse, GetJsonSerializerOptions(), token);
-                
+
                 return response;
             }
             catch (HttpRequestException ex)
@@ -115,43 +115,24 @@ namespace Tradier
     {
         private readonly HttpClient client;
         private TradierAuthentication auth = null!;
-        private readonly bool disposeClient;
-        
+
         internal virtual string BaseAddress => "https://api.tradier.com/v1/";
         internal virtual string StreamAddress => "https://stream.tradier.com/v1/";
-        
+        private readonly bool _disposeHttpClient = false;
+
+
         /// <summary>
-        /// Creates a new Tradier client using credentials from <see cref="TradierConfig"/>.
-        /// </summary>
-        public TradierClient()
-        {
-            this.disposeClient = true;
-            this.client = new HttpClient();
-            InitializeClient();
-        }
-        
-        /// <summary>
-        /// Creates a new Tradier client using the provided HttpClient.
-        /// </summary>
-        /// <param name="client">The HttpClient to use for requests.</param>
-        public TradierClient(HttpClient client)
-        {
-            this.client = client ?? throw new ArgumentNullException(nameof(client));
-            InitializeClient();
-        }
-        
-        /// <summary>
-        /// Creates a new Tradier client with explicit authentication.
+        /// Creates a new Tradier client with explicit authentication. The HttpClient will be created internally and disposed by this client.
         /// </summary>
         /// <param name="authentication">The authentication credentials to use.</param>
         public TradierClient(TradierAuthentication authentication)
         {
-            this.disposeClient = true;
             this.client = new HttpClient();
+            _disposeHttpClient = true;
             this.auth = authentication ?? throw new ArgumentNullException(nameof(authentication));
-            InitializeClient();
+            InitializeClient(authentication.AccessToken);
         }
-        
+
         /// <summary>
         /// Creates a new Tradier client with a custom HttpClient and explicit authentication.
         /// </summary>
@@ -161,18 +142,14 @@ namespace Tradier
         {
             this.client = client ?? throw new ArgumentNullException(nameof(client));
             this.auth = authentication ?? throw new ArgumentNullException(nameof(authentication));
-            InitializeClient();
+            InitializeClient(authentication.AccessToken);
         }
-        
-        internal void InitializeClient()
+
+        internal void InitializeClient(string accessToken)
         {
             this.client.BaseAddress ??= new Uri(BaseAddress);
-            this.auth ??= new TradierAuthentication();
+            this.auth ??= new TradierAuthentication(accessToken);
             this.auth.ApplyAuthentication(this.client);
-            
-            #pragma warning disable CS0618 // Intentionally setting DefaultClient for backward compatibility
-            TradierConfig.DefaultClient = this;
-            #pragma warning restore CS0618
         }
 
         /// <summary>
@@ -203,15 +180,12 @@ namespace Tradier
             };
         }
 
-        /// <inheritdoc />
-        public virtual void Dispose()
+        public void Dispose()
         {
-            if (disposeClient)
-                client?.Dispose();
-            
-            #pragma warning disable CS0618 // Intentionally clearing DefaultClient for backward compatibility
-            TradierConfig.DefaultClient = null!;
-            #pragma warning restore CS0618
+            if (_disposeHttpClient)
+            {
+                client.Dispose();
+            }
         }
     }
 }

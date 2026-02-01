@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Tradier.Services;
 
-namespace Tradier.Extensions
+namespace Tradier
 {
     /// <summary>
     /// Extension methods for configuring Tradier services with dependency injection.
