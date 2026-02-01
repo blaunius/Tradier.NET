@@ -46,21 +46,38 @@ namespace Tradier.Extensions
             // Register options
             services.AddSingleton(options);
 
-            // Register the appropriate client based on sandbox setting
+            // Create authentication
+            var auth = new TradierAuthentication(options.AccessToken);
+
+            // Register the appropriate client based on sandbox setting using factory
             if (options.UseSandbox)
             {
-                services.AddHttpClient<ITradierClient, TradierSandboxClient>((sp, client) =>
+                services.AddHttpClient("TradierClient", client =>
                 {
-                    var auth = new TradierAuthentication(options.AccessToken);
+                    client.BaseAddress = new Uri("https://sandbox.tradier.com/v1/");
                     auth.ApplyAuthentication(client);
+                });
+                
+                services.AddTransient<ITradierClient>(sp =>
+                {
+                    var factory = sp.GetRequiredService<IHttpClientFactory>();
+                    var httpClient = factory.CreateClient("TradierClient");
+                    return new TradierSandboxClient(httpClient, auth);
                 });
             }
             else
             {
-                services.AddHttpClient<ITradierClient, TradierClient>((sp, client) =>
+                services.AddHttpClient("TradierClient", client =>
                 {
-                    var auth = new TradierAuthentication(options.AccessToken);
+                    client.BaseAddress = new Uri("https://api.tradier.com/v1/");
                     auth.ApplyAuthentication(client);
+                });
+                
+                services.AddTransient<ITradierClient>(sp =>
+                {
+                    var factory = sp.GetRequiredService<IHttpClientFactory>();
+                    var httpClient = factory.CreateClient("TradierClient");
+                    return new TradierClient(httpClient, auth);
                 });
             }
 
