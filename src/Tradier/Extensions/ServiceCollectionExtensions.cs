@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Tradier.Services;
 
-namespace Tradier.Extensions
+namespace Tradier
 {
     /// <summary>
     /// Extension methods for configuring Tradier services with dependency injection.
@@ -12,17 +12,17 @@ namespace Tradier.Extensions
         /// Adds Tradier API services to the service collection.
         /// </summary>
         /// <param name="services">The service collection.</param>
-        /// <param name="accessToken">Your Tradier API access token.</param>
+        /// <param name="apiKey">Your Tradier API key.</param>
         /// <param name="useSandbox">If true, uses sandbox (paper trading). Default is true for safety.</param>
         /// <returns>The service collection for chaining.</returns>
         public static IServiceCollection AddTradier(
             this IServiceCollection services,
-            string accessToken,
+            string apiKey,
             bool useSandbox = true)
         {
             return services.AddTradier(options =>
             {
-                options.AccessToken = accessToken;
+                options.ApiKey = apiKey;
                 options.UseSandbox = useSandbox;
             });
         }
@@ -40,14 +40,14 @@ namespace Tradier.Extensions
             var options = new TradierOptions();
             configure(options);
 
-            if (string.IsNullOrEmpty(options.AccessToken))
-                throw new ArgumentException("AccessToken is required.", nameof(configure));
+            if (string.IsNullOrEmpty(options.ApiKey))
+                throw new ArgumentException("ApiKey is required.", nameof(configure));
 
             // Register options
             services.AddSingleton(options);
 
             // Create authentication
-            var auth = new TradierAuthentication(options.AccessToken);
+            var auth = new TradierAuthentication(options.ApiKey);
 
             // Register the appropriate client based on sandbox setting using factory
             if (options.UseSandbox)
@@ -57,7 +57,7 @@ namespace Tradier.Extensions
                     client.BaseAddress = new Uri("https://sandbox.tradier.com/v1/");
                     auth.ApplyAuthentication(client);
                 });
-                
+
                 services.AddScoped<ITradierClient>(sp =>
                 {
                     var factory = sp.GetRequiredService<IHttpClientFactory>();
@@ -72,7 +72,7 @@ namespace Tradier.Extensions
                     client.BaseAddress = new Uri("https://api.tradier.com/v1/");
                     auth.ApplyAuthentication(client);
                 });
-                
+
                 services.AddScoped<ITradierClient>(sp =>
                 {
                     var factory = sp.GetRequiredService<IHttpClientFactory>();
@@ -86,6 +86,12 @@ namespace Tradier.Extensions
             services.AddScoped<AccountService>();
             services.AddScoped<TradingService>();
             services.AddScoped<WatchlistService>();
+            
+            // StreamingService only works with production client
+            if (!options.UseSandbox)
+            {
+                services.AddScoped<StreamingService>();
+            }
 
             return services;
         }
@@ -97,9 +103,9 @@ namespace Tradier.Extensions
     public class TradierOptions
     {
         /// <summary>
-        /// Your Tradier API access token.
+        /// Your Tradier API key.
         /// </summary>
-        public string AccessToken { get; set; } = string.Empty;
+        public string ApiKey { get; set; } = string.Empty;
 
         /// <summary>
         /// If true, uses sandbox environment (paper trading). Default is true for safety.

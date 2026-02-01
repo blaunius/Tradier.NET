@@ -9,8 +9,11 @@ namespace Tradier.Services
     /// </summary>
     public class TradingService : TradierService
     {
+        /// <summary>
+        /// Creates a new TradingService with the specified client.
+        /// </summary>
+        /// <param name="client">The Tradier API client to use.</param>
         public TradingService(ITradierClient client) : base(client) { }
-        public TradingService() : base() { }
 
         #region Equity Orders
 

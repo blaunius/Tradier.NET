@@ -11,14 +11,9 @@ namespace Tradier.Services
     public class AccountService : TradierService
     {
         /// <summary>
-        /// <inheritdoc cref="AccountService"/>
+        /// Creates a new AccountService with the specified client.
         /// </summary>
-        public AccountService() : base()
-        {
-        }
-        /// <summary>
-        /// <inheritdoc cref="AccountService"/>
-        /// </summary>
+        /// <param name="tradierClient">The Tradier API client to use.</param>
         public AccountService(ITradierClient tradierClient) : base(tradierClient)
         {
         }

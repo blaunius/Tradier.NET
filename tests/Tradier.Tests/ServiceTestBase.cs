@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Tradier.Services;
 using Tradier.Response;
 
@@ -12,9 +7,10 @@ namespace Tradier.Tests
     [TestClass]
     public class ServiceTestBase
     {
-        public IConfigurationRoot config;
+        public IConfigurationRoot config = null!;
         public TradierClient? Client { get; set; }
         public TradierSandboxClient? SandboxClient { get; set; }
+        
         public ServiceTestBase()
         {
             config = new ConfigurationBuilder()
@@ -22,12 +18,23 @@ namespace Tradier.Tests
                 .Build();
         }
 
-        [TestInitialize()]
+        [TestInitialize]
         public void Init()
         {
-            TradierConfig.RedirectUri = config["Tradier:RedirectUri"];
-            this.SandboxClient = new TradierSandboxClient(new TradierAuthentication(config["Tradier:AccessTokens:Sandbox"], TradierConfig.RedirectUri));
-            this.Client = new TradierClient(new TradierAuthentication(config["Tradier:AccessTokens:Production"], TradierConfig.RedirectUri));
+            var sandboxToken = config["Tradier:AccessTokens:Sandbox"];
+            var productionToken = config["Tradier:AccessTokens:Production"];
+            
+            if (!string.IsNullOrEmpty(sandboxToken))
+            {
+                SandboxClient = new TradierSandboxClient(new TradierAuthentication(sandboxToken));
+            }
+            
+            if (!string.IsNullOrEmpty(productionToken))
+            {
+                Client = new TradierClient(new TradierAuthentication(productionToken));
+            }
+            
+            SetService();
         }
 
         public virtual void SetService()
