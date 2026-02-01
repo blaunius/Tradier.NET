@@ -1,11 +1,11 @@
 <div align="center">
 
-# TradierSDK
+# Tradier.Client
 
 ### A Modern .NET SDK for the Tradier Brokerage API
 
-[![NuGet Version](https://img.shields.io/nuget/v/TradierSDK?style=flat-square&logo=nuget&color=004880)](https://www.nuget.org/packages/TradierSDK)
-[![NuGet Downloads](https://img.shields.io/nuget/dt/TradierSDK?style=flat-square&logo=nuget&color=004880)](https://www.nuget.org/packages/TradierSDK)
+[![NuGet Version](https://img.shields.io/nuget/v/Tradier.Client?style=flat-square&logo=nuget&color=004880)](https://www.nuget.org/packages/Tradier.Client)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/Tradier.Client?style=flat-square&logo=nuget&color=004880)](https://www.nuget.org/packages/Tradier.Client)
 [![License](https://img.shields.io/github/license/blaunius/Tradier.NET?style=flat-square&color=blue)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-512BD4?style=flat-square&logo=dotnet)](https://dotnet.microsoft.com)
 
@@ -38,13 +38,13 @@ Build powerful trading applications with real-time market data, options chains, 
 Install via NuGet Package Manager:
 
 ```bash
-dotnet add package TradierSDK
+dotnet add package Tradier.Client
 ```
 
 Or via the Package Manager Console:
 
 ```powershell
-Install-Package TradierSDK
+Install-Package Tradier.Client
 ```
 
 ---
