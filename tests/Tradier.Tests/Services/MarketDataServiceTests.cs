@@ -27,6 +27,23 @@ namespace Tradier.Tests.Services
         }
 
         [TestMethod()]
+        public void GetQuotesWithCancellationTokenTest()
+        {
+            using var cts = new CancellationTokenSource();
+            var rs = this.service.GetQuotes(true, new[] { "AAPL", "GOOG", "MSFT" }, cts.Token).Result;
+            this.AssertResponse(rs);
+        }
+
+        [TestMethod()]
+        public async Task GetQuotesCancellationTest()
+        {
+            using var cts = new CancellationTokenSource();
+            cts.Cancel();
+            await Assert.ThrowsExceptionAsync<OperationCanceledException>(() =>
+                this.service.GetQuotes(true, new[] { "AAPL" }, cts.Token));
+        }
+
+        [TestMethod()]
         public void GetOptionChainsTest()
         {
             var rs = this.service.GetOptionChains("AAPL", new DateTime(2025, 8, 29), true).Result;

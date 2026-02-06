@@ -15,9 +15,22 @@ namespace Tradier.Services
         /// <summary>
         /// Get a list of symbols using a keyword lookup on the symbols description. Results are in descending order by average volume of the security. This can be used for simple search functions.
         /// </summary>
+        /// <param name="showGreeks">Whether to include option Greeks in the response.</param>
+        /// <param name="symbols">The symbols to get quotes for.</param>
+        /// <param name="token">Cancellation token.</param>
+        public Task<MarketQuotesResponse> GetQuotes(bool showGreeks, IEnumerable<string> symbols, CancellationToken token = default)
+        {
+            return client.Get<MarketQuotesResponse>($"markets/quotes?greeks={showGreeks.ToString().ToLower()}&symbols={string.Join(',', symbols ?? [])}", token);
+        }
+        
+        /// <summary>
+        /// Get a list of symbols using a keyword lookup on the symbols description. Results are in descending order by average volume of the security. This can be used for simple search functions.
+        /// </summary>
+        /// <param name="showGreeks">Whether to include option Greeks in the response.</param>
+        /// <param name="symbols">The symbols to get quotes for.</param>
         public Task<MarketQuotesResponse> GetQuotes(bool showGreeks, params string[] symbols)
         {
-            return client.Get<MarketQuotesResponse>($"markets/quotes?greeks={showGreeks.ToString().ToLower()}&symbols={string.Join(',', symbols ?? [])}");
+            return GetQuotes(showGreeks, symbols, default);
         }
         /// <summary>
         /// Get all quotes in an option chain.

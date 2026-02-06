@@ -8,7 +8,7 @@
 		
 		<!-- NuGet Package Metadata -->
 		<PackageId>Tradier.Client</PackageId>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<Authors>Pennyworth Labs</Authors>
 		<Company>Pennyworth Labs</Company>
 		<Description>A modern .NET SDK for the Tradier Brokerage API. Supports trading, market data, options chains with Greeks, account management, and streaming. Works with both production and sandbox (paper trading) environments.</Description>
@@ -18,7 +18,7 @@
 		<RepositoryUrl>https://github.com/blaunius/Tradier.NET</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageReleaseNotes>v1.0.1: Removed static TradierConfig, simplified authentication to ApiKey-only, added StreamingService for real-time market data, improved DI support, added comprehensive constructor tests.</PackageReleaseNotes>
+		<PackageReleaseNotes>v1.0.2: Added proper CancellationToken support to GetQuotes method with overloads for both params and IEnumerable signatures. All service methods now consistently support cancellation.</PackageReleaseNotes>
 		
 		<!-- Source Link -->
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
